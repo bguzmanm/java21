@@ -10,13 +10,34 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Embeddable
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class MatriculaPK implements Serializable {
-  @Column(name="id_estudiante")
+
+  @Column(name = "estudiante_id")
   private Integer estudianteId;
-  @Column(name="id_curso")
+  @Column(name = "curso_id")
   private Integer cursoId;
+
+  public MatriculaPK() {
+  }
+
+  public MatriculaPK(Integer estudianteId, Integer cursoId) {
+    this.estudianteId = estudianteId;
+    this.cursoId = cursoId;
+  }
+
+  public Integer getEstudianteId() {
+    return estudianteId;
+  }
+
+  public void setEstudianteId(Integer estudianteId) {
+    this.estudianteId = estudianteId;
+  }
+
+  public Integer getCursoId() {
+    return cursoId;
+  }
+
+  public void setCursoId(Integer cursoId) {
+    this.cursoId = cursoId;
+  }
 }

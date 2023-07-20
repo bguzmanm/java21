@@ -1,24 +1,24 @@
 package cl.awakelab.enrollApp.web.controller;
 
-import cl.awakelab.enrollApp.web.service.StudentService;
+import cl.awakelab.enrollApp.web.service.RegisterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/student")
-public class StudentController {
+@RequestMapping("/register")
+public class RegisterController {
 
-  private final StudentService service;
+  private final RegisterService service;
 
-  public StudentController(StudentService service) {
+  public RegisterController(RegisterService service) {
     this.service = service;
   }
 
   @GetMapping
   public String findAll(Model model){
-    model.addAttribute("students",service.findAll());
-    return "listStudent";
+    model.addAttribute("registers", service.findAll());
+    return "listRegister";
   }
 }
