@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface TeacherService {
   Optional<List<Teacher>> findAll();
   Optional<Teacher> findById(int id);
-  boolean create(Teacher teacher);
-  boolean update(Teacher teacher);
+  Optional<Teacher> create(Teacher teacher);
+  Optional<Teacher> update(Teacher teacher);
   boolean delete(int id);
 }

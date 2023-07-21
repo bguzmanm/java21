@@ -7,6 +7,7 @@ import cl.awakelab.enrollApp.model.persistence.repository.TeacherRepository;
 import cl.awakelab.enrollApp.web.service.TeacherService;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,18 +32,27 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public boolean create(Teacher teacher)
+  public Optional<Teacher> create(Teacher teacher)
   {
-    return repository.save(
-            mapper.toFacilitador(teacher)
-    ).getId()>0;
+    return Optional.of(
+            mapper.toTeacher(
+                    repository.save(
+                            mapper.toFacilitador(teacher)
+                    )
+            ));
   }
 
   @Override
-  public boolean update(Teacher teacher) {
-    return repository.save(
-            mapper.toFacilitador(teacher)
-    ).getId() == teacher.getId();
+  public Optional<Teacher> update(Teacher teacher) {
+    if (repository.existsById(teacher.getId())){
+      return Optional.of(
+              mapper.toTeacher(
+                      repository.save(
+                              mapper.toFacilitador(teacher)
+                      )
+              ));
+    }
+    return Optional.of(new Teacher());
   }
 
   @Override
