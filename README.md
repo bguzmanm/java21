@@ -164,3 +164,4 @@ Hemos implementado una arquitectura basada en MVC, que se compone de los siguien
 ### Web
 - **controller**: Implementae el esterotipo @Controller, para la interacción con las vistas.
 - **service**: Interfaces que declaran los requerimientos de los controladores.
+- **securuty**: Configuración de Spring Security.
