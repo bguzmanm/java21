@@ -165,3 +165,20 @@ Hemos implementado una arquitectura basada en MVC, que se compone de los siguien
 - **controller**: Implementae el esterotipo @Controller, para la interacción con las vistas.
 - **service**: Interfaces que declaran los requerimientos de los controladores.
 - **securuty**: Configuración de Spring Security.
+
+## Security
+Para la correcta implementación de Security, en el ejemplo creamos una tabla llamada User y cargamos un par de usuarios.
+Acá su DDL y DML.
+Ambos usuarios tienen la contraseña `kupita`.
+
+```sql
+create table user (
+    username varchar(20) not null primary key,
+    password varchar(100) not null,
+    role varchar(100)
+);
+
+insert into user (username, password, role)
+values  ('admin', '$2a$10$p2fj8xeK42w4P2FuF4chK.NPPaR5K7MuwWgya1SE9pnKWqRbZk.9S', 'ADMIN'),
+        ('user', '$2a$10$p2fj8xeK42w4P2FuF4chK.NPPaR5K7MuwWgya1SE9pnKWqRbZk.9S', 'USER');
+```

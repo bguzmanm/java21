@@ -1,23 +1,24 @@
 package cl.awakelab.enrollApp.web.security;
 
+import cl.awakelab.enrollApp.model.persistence.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-  @Bean
+/*  @Bean
   public InMemoryUserDetailsManager userDetailsManager(PasswordEncoder encoder){
     UserDetails user = User.withUsername("user")
             .password(encoder.encode("kupita"))
@@ -31,16 +32,42 @@ public class SecurityConfig {
     System.out.println(encoder.encode("kupita"));
 
     return new InMemoryUserDetailsManager(user, admin);
+  }*/
+
+  UserRepository repository;
+
+  public SecurityConfig(UserRepository repository) {
+    this.repository = repository;
   }
+
+  @Bean
+  public UserDetailsService userDetailsService(){
+    return new UserDetailsServiceImpl(repository);
+  }
+
+  @Bean
+  public DaoAuthenticationProvider authenticationProvider(){
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsService());
+    authProvider.setPasswordEncoder(encoder());
+    return authProvider;
+  }
+
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(authenticationProvider());
+  }
+
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http
             .authorizeRequests()
             /*.requestMatchers("/js/**", "/css/**", "/img/**").permitAll()*/
             /*.requestMatchers("/").permitAll()*/
-            .requestMatchers("/student").hasAnyRole("USER", "ADMIN")
-            .requestMatchers("/register").hasRole("ADMIN")
-            .requestMatchers("/api/teacher").hasRole("ADMIN")
+            .requestMatchers("/student").hasAuthority("USER")
+            .requestMatchers("/register").hasAuthority("ADMIN")
+            .requestMatchers("/api/teacher").hasAuthority("ADMIN")
+            .requestMatchers("/api/teacher/**").hasAnyAuthority("ADMIN")
             .and()
             .httpBasic(Customizer.withDefaults())
             .formLogin()
@@ -55,7 +82,7 @@ public class SecurityConfig {
 
   @Bean
   public PasswordEncoder encoder(){
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    /*return new BCryptPasswordEncoder();*/
+    /*return PasswordEncoderFactories.createDelegatingPasswordEncoder();*/
+    return new BCryptPasswordEncoder();
   }
 }
